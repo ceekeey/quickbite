@@ -118,9 +118,11 @@ const CartPage = () => {
                 </div>
 
                 <div className="mt-8 space-y-4">
-                  <Button variant="cta" size="lg" className="w-full gap-2 py-4 shadow-xl shadow-accent/20">
-                    Checkout <FiArrowRight />
-                  </Button>
+                  <Link to="/payment">
+                    <Button variant="cta" size="lg" className="w-full gap-2 py-4 shadow-xl shadow-accent/20">
+                      Checkout <FiArrowRight />
+                    </Button>
+                  </Link>
                   <p className="text-[11px] text-text-muted text-center px-4">
                     By clicking checkout, you agree to our Terms of Service and Privacy Policy.
                   </p>

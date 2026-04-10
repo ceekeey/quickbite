@@ -5,6 +5,8 @@ import {
   FoodDetailsPage, 
   CartPage, 
   OrdersPage, 
+  Dashboard,
+  PaymentPage,
   AdminLayout, 
   AdminDashboard, 
   ManageFoodsPage, 
@@ -24,6 +26,8 @@ const App = () => {
         <Route path="/food/:id" element={<FoodDetailsPage />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/orders" element={<OrdersPage />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/payment" element={<PaymentPage />} />
         <Route path="/auth" element={<Auth />} />
 
         {/* Admin Routes */}
@@ -35,7 +39,7 @@ const App = () => {
         </Route>
 
         {/* Redirects */}
-        <Route path="/profile" element={<Navigate to="/orders" replace />} />
+        <Route path="/profile" element={<Navigate to="/dashboard" replace />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </CartProvider>

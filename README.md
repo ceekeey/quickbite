@@ -1,18 +1,77 @@
-# React + Vite
+# 🍔 QuickBite – Food Ordering App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+QuickBite is a modern food ordering web application built with the MERN stack.  
+It allows users to browse meals, add items to cart, and place orders, while admins can manage foods and orders.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🚀 Features
 
-## React Compiler
+### 👤 Customer
+- Browse food items
+- Filter by categories
+- View food details
+- Add to cart
+- Place orders
+- View order history
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+### 🛠️ Admin
+- Dashboard overview
+- Add / edit / delete food items
+- Manage orders
+- Manage users
 
-Note: This will impact Vite dev & build performances.
+---
 
-## Expanding the ESLint configuration
+## 🖼️ Screenshots
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 🏠 Homepage
+![Homepage](./screenshots/home.png)
+
+### 🍔 Food Listing
+![Food List](./screenshots/foods.png)
+
+### 🛒 Cart Page
+![Cart](./screenshots/cart.png)
+
+### 🛠️ Admin Dashboard
+![Admin](./screenshots/admin.png)
+
+> 📌 Create a `screenshots` folder in your project and add your images there.
+
+---
+
+## 🧠 Tech Stack
+
+### Frontend
+- React (Vite)
+- Tailwind CSS
+- React Router
+- Context API
+
+### Backend (Planned / Future)
+- Node.js
+- Express.js
+- MongoDB
+
+---
+
+## 🎨 UI Design
+
+QuickBite uses a modern and clean UI inspired by top food delivery apps.
+
+### Color Scheme
+- Primary: `#16A34A` (Green)
+- Accent: `#F97316` (Orange)
+- Background: `#F9FAFB`
+- Text: `#111827`
+
+### Design Principles
+- Card-based layout
+- Soft shadows & rounded corners
+- Mobile-first responsive design
+- Fast and simple user flow
+
+---
+
+## 📂 Project Structure

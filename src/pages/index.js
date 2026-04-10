@@ -3,6 +3,9 @@ export { default as HomePage } from './customer/HomePage';
 export { default as FoodDetailsPage } from './customer/FoodDetailsPage';
 export { default as CartPage } from './customer/CartPage';
 export { default as OrdersPage } from './customer/OrdersPage';
+export { default as Dashboard } from './customer/Dashboard';
+export { default as PaymentPage } from './customer/PaymentPage';
+
 
 // Admin Pages
 export { default as AdminLayout } from './admin/AdminLayout';

@@ -1,11 +1,11 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { 
-  FiPieChart, 
-  FiBox, 
-  FiShoppingBag, 
-  FiUsers, 
-  FiSettings, 
+import {
+  FiPieChart,
+  FiBox,
+  FiShoppingBag,
+  FiUsers,
+  FiSettings,
   FiLogOut,
   FiChevronLeft
 } from 'react-icons/fi';
@@ -21,10 +21,10 @@ const Sidebar = () => {
   return (
     <aside className="w-64 bg-white border-r border-gray-100 flex flex-col h-screen sticky top-0">
       <div className="p-6 flex items-center gap-3">
-        <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-          <span className="text-white font-bold">C</span>
+        <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
+          <span className="text-white font-bold text-xl italic uppercase">Q</span>
         </div>
-        <span className="text-xl font-bold text-text-main">Admin Panel</span>
+        <span className="text-xl font-black text-text-main tracking-tight">QuickBite <span className="text-primary italic">Admin</span></span>
       </div>
 
       <nav className="flex-1 px-4 space-y-1 mt-4">
@@ -35,8 +35,8 @@ const Sidebar = () => {
             end={item.path === '/admin'}
             className={({ isActive }) => `
               flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all group
-              ${isActive 
-                ? 'bg-primary text-white shadow-lg shadow-primary/20' 
+              ${isActive
+                ? 'bg-primary text-white shadow-lg shadow-primary/20'
                 : 'text-text-muted hover:bg-bg-base hover:text-primary'}
             `}
           >
