@@ -94,6 +94,6 @@ export const orders = [
 
 export const stats = [
   { label: 'Total Orders', value: '1,240', change: '+12%', icon: 'ShoppingBag' },
-  { label: 'Total Revenue', value: '$12,850', change: '+18%', icon: 'DollarSign' },
+  { label: 'Total Revenue', value: '₦12,850', change: '+18%', icon: 'DollarSign' },
   { label: 'Active Users', value: '450', change: '+5%', icon: 'Users' },
 ];

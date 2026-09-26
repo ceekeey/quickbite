@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FiMail, FiLock, FiUser, FiArrowRight, FiGithub, FiTwitter } from 'react-icons/fi';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import {
+  FiArrowRight,
+  FiEye,
+  FiEyeOff,
+  FiLock,
+  FiMail,
+  FiUser,
+} from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Button from '../components/ui/Button';
@@ -9,220 +16,294 @@ import authHero from '../assets/auth_hero.png';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const [formData, setFormData] = useState({ name: '', email: '', password: '' });
+  const [showPassword, setShowPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+  });
   const [loading, setLoading] = useState(false);
-  
+
   const { login } = useAuth();
   const navigate = useNavigate();
+  const reduceMotion = useReducedMotion();
 
-  const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((current) => ({ ...current, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const switchMode = () => {
+    if (loading) return;
+    setIsLogin((current) => !current);
+    setShowPassword(false);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (loading) return;
+
+    const name = formData.name.trim();
+    const email = formData.email.trim();
+    const password = formData.password;
+
+    if (!email || !password || (!isLogin && !name)) {
+      toast.error('Please complete all required fields.');
+      return;
+    }
+
+    // Demo-only sign-in: replace this simulated flow when backend auth is ready.
     setLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      if (formData.email && formData.password) {
-        login({
-          name: formData.name || formData.email.split('@')[0],
-          email: formData.email,
-          avatar: 'https://i.pravatar.cc/150?u=' + formData.email
-        });
-        toast.success(`Welcome back, ${formData.name || formData.email.split('@')[0]}!`);
-        navigate('/dashboard');
-      } else {
-        toast.error('Please fill in all required fields');
-      }
+    window.setTimeout(() => {
+      const displayName = name || email.split('@')[0];
+      login({
+        name: displayName,
+        email,
+        avatar: `https://i.pravatar.cc/150?u=${encodeURIComponent(email)}`,
+      });
+      toast.success(`${isLogin ? 'Welcome back' : 'Welcome'}, ${displayName}!`);
       setLoading(false);
-    }, 1500);
+      navigate('/dashboard');
+    }, 900);
   };
+
+  const inputClassName =
+    'block min-h-12 w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pl-11 pr-4 text-sm font-medium text-text-main outline-none transition placeholder:font-normal placeholder:text-gray-400 hover:border-gray-300 focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10';
 
   return (
-    <div className="min-h-screen bg-white flex">
-      {/* Left Side: Image Aside */}
-      <div className="hidden lg:flex w-[60%] relative overflow-hidden bg-primary group">
-        <motion.div
-          initial={{ scale: 1.1, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 1.5, ease: "easeOut" }}
-          className="absolute inset-0"
-        >
-          <img 
-            src={authHero} 
-            alt="Flavorful experience" 
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
-        </motion.div>
+    <div className="min-h-screen bg-[#faf9f6] lg:grid lg:grid-cols-[1.05fr_0.95fr]">
+      {/* Brand / image panel */}
+      <aside className="relative hidden min-h-screen overflow-hidden bg-gray-950 lg:flex">
+        <img
+          src={authHero}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover opacity-75"
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-black/75 via-black/35 to-primary/50" />
 
-        {/* Floating Branding Info */}
-        <div className="relative z-20 p-16 flex flex-col justify-between h-full w-full">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-2xl transform shadow-white/20">
-              <span className="text-primary font-black text-2xl italic">Q</span>
-            </div>
-            <span className="text-white text-2xl font-black tracking-tight">QuickBite</span>
-          </div>
+        <div className="relative z-10 flex w-full flex-col justify-between p-10 xl:p-14">
+          <a href="/" aria-label="QuickBite home" className="inline-flex w-fit items-center gap-3 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">
+            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-xl font-black italic text-primary shadow-lg">Q</span>
+            <span className="text-xl font-extrabold tracking-tight text-white">QuickBite</span>
+          </a>
 
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.5, duration: 0.8 }}
-            className="max-w-xl"
+            initial={reduceMotion ? false : { opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, ease: 'easeOut' }}
+            className="max-w-xl pb-8"
           >
-            <h2 className="text-6xl font-black text-white leading-tight mb-6">
-              Flavor <span className="text-accent italic">Awaits</span> you.
+            <span className="mb-5 inline-flex rounded-full border border-white/25 bg-white/10 px-3 py-1.5 text-xs font-semibold tracking-wide text-white backdrop-blur">
+              A little joy in every bite
+            </span>
+            <h2 className="text-5xl font-black leading-[1.08] tracking-tight text-white xl:text-6xl">
+              Your next great meal is <span className="text-orange-300">closer.</span>
             </h2>
-            <p className="text-white/80 text-xl font-medium leading-relaxed max-w-md">
-              Join our community of food lovers. The best meals from top restaurants, delivered with love and speed.
+            <p className="mt-5 max-w-md text-base leading-relaxed text-white/80 xl:text-lg">
+              Find something delicious, make it yours, and enjoy the good stuff with QuickBite.
             </p>
-            
-            <div className="mt-12 flex gap-12">
-              <div>
-                <p className="text-4xl font-black text-white">50k+</p>
-                <p className="text-white/60 text-sm font-bold uppercase tracking-widest mt-1">Happy Users</p>
-              </div>
-              <div>
-                <p className="text-4xl font-black text-white">100+</p>
-                <p className="text-white/60 text-sm font-bold uppercase tracking-widest mt-1">Restaurants</p>
-              </div>
-            </div>
           </motion.div>
 
-          <div className="text-white/40 text-sm font-medium">
-            © 2026 QuickBite Food Delivery. Quality Guaranteed.
-          </div>
-        </div>
-      </div>
-
-      {/* Right Side: Form Aside */}
-      <div className="w-full lg:w-[40%] flex flex-col items-center justify-center p-8 md:p-12 relative">
-        <div className="w-full max-w-sm">
-          <div className="lg:hidden text-center mb-10">
-            <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-6 transform rotate-12 shadow-lg shadow-primary/20">
-              <span className="text-white font-bold text-3xl italic">Q</span>
-            </div>
-          </div>
-
-          <div className="mb-10">
-            <h1 className="text-4xl font-black text-text-main">
-              {isLogin ? 'Welcome Back' : 'Get Started'}
-            </h1>
-            <p className="text-text-muted mt-3 font-medium text-lg leading-relaxed">
-              {isLogin ? 'Good to see you again! Please enter your details.' : 'Create an account to start your culinary journey.'}
-            </p>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <AnimatePresence mode="wait">
-              {!isLogin && (
-                <motion.div
-                  key="signup-field"
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                >
-                  <label className="text-xs font-black text-text-main ml-1 mb-2 block uppercase tracking-[0.15em]">Full Name</label>
-                  <div className="relative group">
-                    <FiUser className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary transition-colors" />
-                    <input
-                      type="text"
-                      name="name"
-                      placeholder="John Doe"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      className="w-full bg-bg-base border-2 border-transparent focus:border-primary/20 focus:bg-white rounded-2xl py-4 pl-12 pr-4 outline-none transition-all font-bold placeholder:font-medium shadow-inner"
-                      required={!isLogin}
-                    />
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            <div>
-              <label className="text-xs font-black text-text-main ml-1 mb-2 block uppercase tracking-[0.15em]">Email Address</label>
-              <div className="relative group">
-                <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary transition-colors" />
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="hello@quickbite.com"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className="w-full bg-bg-base border-2 border-transparent focus:border-primary/20 focus:bg-white rounded-2xl py-4 pl-12 pr-4 outline-none transition-all font-bold placeholder:font-medium shadow-inner"
-                  required
-                />
-              </div>
-            </div>
-
-            <div>
-              <div className="flex justify-between items-center mb-2">
-                <label className="text-xs font-black text-text-main ml-1 uppercase tracking-[0.15em]">Password</label>
-                {isLogin && (
-                  <button type="button" className="text-xs font-black text-primary hover:text-primary-dark transition-colors uppercase tracking-widest">Forgot?</button>
-                )}
-              </div>
-              <div className="relative group">
-                <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary transition-colors" />
-                <input
-                  type="password"
-                  name="password"
-                  placeholder="••••••••"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  className="w-full bg-bg-base border-2 border-transparent focus:border-primary/20 focus:bg-white rounded-2xl py-4 pl-12 pr-4 outline-none transition-all font-bold placeholder:font-medium shadow-inner"
-                  required
-                />
-              </div>
-            </div>
-
-            <Button 
-              type="submit" 
-              variant="cta" 
-              size="lg" 
-              className="w-full py-5 mt-4 gap-3 shadow-xl shadow-accent/20 rounded-[1.25rem]"
-              disabled={loading}
-            >
-              {loading ? (
-                <span className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <>
-                  <span className="font-black text-lg">{isLogin ? 'Sign In' : 'Create Account'}</span>
-                  <FiArrowRight size={20} />
-                </>
-              )}
-            </Button>
-          </form>
-
-          <div className="mt-10 flex items-center gap-4 text-text-muted">
-            <div className="h-[1px] bg-gray-100 flex-1" />
-            <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-50">Social Auth</span>
-            <div className="h-[1px] bg-gray-100 flex-1" />
-          </div>
-
-          <div className="mt-8 flex gap-4">
-            <button className="flex-1 flex items-center justify-center gap-3 py-4 px-4 bg-white border border-gray-100 rounded-2xl hover:bg-bg-base hover:border-transparent transition-all font-black text-xs text-text-main shadow-sm uppercase tracking-wider group">
-              <FiGithub size={20} className="group-hover:scale-110 transition-transform" /> Github
-            </button>
-            <button className="flex-1 flex items-center justify-center gap-3 py-4 px-4 bg-white border border-gray-100 rounded-2xl hover:bg-bg-base hover:border-transparent transition-all font-black text-xs text-text-main shadow-sm uppercase tracking-wider group">
-              <FiTwitter size={20} className="text-blue-400 group-hover:scale-110 transition-transform" /> Twitter
-            </button>
-          </div>
-
-          <p className="mt-12 text-center text-text-muted font-bold text-sm">
-            {isLogin ? "Don't have an account?" : "Already have an account?"}
-            <button 
-              onClick={() => setIsLogin(!isLogin)}
-              className="ml-2 text-primary font-black hover:text-primary-dark transition-colors underline underline-offset-4"
-            >
-              {isLogin ? 'Join Now' : 'Sign In'}
-            </button>
+          <p className="text-xs font-medium text-white/60">
+            © {new Date().getFullYear()} QuickBite. Made for food lovers.
           </p>
         </div>
-      </div>
+      </aside>
+
+      {/* Form panel */}
+      <main className="flex min-h-screen flex-col items-center justify-center px-5 py-8 sm:px-8 lg:px-10">
+        <div className="w-full max-w-md">
+          <div className="mb-8 flex items-center justify-between lg:hidden">
+            <a href="/" aria-label="QuickBite home" className="inline-flex items-center gap-2 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-xl font-black italic text-white">Q</span>
+              <span className="text-lg font-extrabold tracking-tight text-text-main">QuickBite</span>
+            </a>
+            <span className="text-xs font-semibold text-text-muted">Food, made easy</span>
+          </div>
+
+          <motion.section
+            key={isLogin ? 'login' : 'signup'}
+            initial={reduceMotion ? false : { opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.25 }}
+            aria-labelledby="auth-heading"
+          >
+            <div className="mb-7">
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.16em] text-primary">
+                {isLogin ? 'Welcome to QuickBite' : 'Join QuickBite'}
+              </p>
+              <h1 id="auth-heading" className="text-3xl font-extrabold tracking-tight text-text-main sm:text-4xl">
+                {isLogin ? 'Welcome back' : 'Create your account'}
+              </h1>
+              <p className="mt-3 text-sm leading-relaxed text-text-muted sm:text-base">
+                {isLogin
+                  ? 'Sign in to continue discovering meals you love.'
+                  : 'A few details and you’ll be ready to explore the menu.'}
+              </p>
+            </div>
+
+            <div className="mb-6 grid grid-cols-2 rounded-xl bg-gray-100 p-1" role="tablist" aria-label="Account access">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={isLogin}
+                onClick={() => !loading && setIsLogin(true)}
+                className={`min-h-10 rounded-lg px-3 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${isLogin ? 'bg-white text-text-main shadow-sm' : 'text-gray-500 hover:text-gray-800'
+                  }`}
+              >
+                Sign in
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={!isLogin}
+                onClick={() => !loading && setIsLogin(false)}
+                className={`min-h-10 rounded-lg px-3 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${!isLogin ? 'bg-white text-text-main shadow-sm' : 'text-gray-500 hover:text-gray-800'
+                  }`}
+              >
+                Create account
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <AnimatePresence initial={false}>
+                {!isLogin && (
+                  <motion.div
+                    key="name-field"
+                    initial={reduceMotion ? false : { opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={reduceMotion ? undefined : { opacity: 0, height: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="overflow-hidden"
+                  >
+                    <label htmlFor="auth-name" className="mb-1.5 block text-sm font-semibold text-gray-700">
+                      Full name
+                    </label>
+                    <div className="relative">
+                      <FiUser aria-hidden="true" className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={17} />
+                      <input
+                        id="auth-name"
+                        type="text"
+                        name="name"
+                        autoComplete="name"
+                        placeholder="Your full name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        required={!isLogin}
+                        disabled={loading}
+                        className={inputClassName}
+                      />
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <div>
+                <label htmlFor="auth-email" className="mb-1.5 block text-sm font-semibold text-gray-700">
+                  Email address
+                </label>
+                <div className="relative">
+                  <FiMail aria-hidden="true" className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={17} />
+                  <input
+                    id="auth-email"
+                    type="email"
+                    name="email"
+                    autoComplete="email"
+                    inputMode="email"
+                    placeholder="you@example.com"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    required
+                    disabled={loading}
+                    className={inputClassName}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <div className="mb-1.5 flex items-center justify-between gap-3">
+                  <label htmlFor="auth-password" className="text-sm font-semibold text-gray-700">
+                    Password
+                  </label>
+                  {isLogin && (
+                    <button
+                      type="button"
+                      onClick={() => toast('Password recovery will be available when authentication is connected.', { icon: 'ℹ️' })}
+                      className="rounded text-xs font-semibold text-primary hover:text-primary-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                    >
+                      Forgot password?
+                    </button>
+                  )}
+                </div>
+                <div className="relative">
+                  <FiLock aria-hidden="true" className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={17} />
+                  <input
+                    id="auth-password"
+                    type={showPassword ? 'text' : 'password'}
+                    name="password"
+                    autoComplete={isLogin ? 'current-password' : 'new-password'}
+                    placeholder="Enter your password"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    required
+                    disabled={loading}
+                    className={`${inputClassName} pr-12`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((visible) => !visible)}
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    aria-pressed={showPassword}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg p-2 text-gray-500 transition hover:bg-gray-100 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                  >
+                    {showPassword ? <FiEyeOff aria-hidden="true" size={17} /> : <FiEye aria-hidden="true" size={17} />}
+                  </button>
+                </div>
+                {!isLogin && (
+                  <p className="mt-2 text-xs text-text-muted">Use a password you can remember and keep private.</p>
+                )}
+              </div>
+
+              <Button
+                type="submit"
+                variant="cta"
+                size="lg"
+                disabled={loading}
+                className="mt-2 flex min-h-12 w-full items-center justify-center gap-2 rounded-xl px-5 py-3 text-base font-bold shadow-md shadow-primary/15 disabled:cursor-not-allowed disabled:opacity-70"
+              >
+                {loading ? (
+                  <>
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" aria-hidden="true" />
+                    <span>{isLogin ? 'Signing in…' : 'Creating account…'}</span>
+                  </>
+                ) : (
+                  <>
+                    <span>{isLogin ? 'Sign in' : 'Create account'}</span>
+                    <FiArrowRight aria-hidden="true" />
+                  </>
+                )}
+              </Button>
+            </form>
+
+            <p className="mt-7 text-center text-sm text-text-muted">
+              {isLogin ? 'New to QuickBite?' : 'Already have an account?'}{' '}
+              <button
+                type="button"
+                onClick={switchMode}
+                disabled={loading}
+                className="rounded font-bold text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:opacity-50"
+              >
+                {isLogin ? 'Create an account' : 'Sign in'}
+              </button>
+            </p>
+
+            <p className="mt-8 text-center text-xs leading-relaxed text-gray-400">
+              This is a frontend demo. Account access and password recovery are simulated and are not connected to a server.
+            </p>
+          </motion.section>
+        </div>
+      </main>
     </div>
   );
 };

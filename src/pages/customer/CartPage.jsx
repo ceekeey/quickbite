@@ -57,15 +57,15 @@ const CartPage = () => {
                     <div className="w-24 h-24 rounded-2xl overflow-hidden flex-shrink-0">
                       <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                     </div>
-                    
+
                     <div className="flex-1 min-w-0">
                       <h3 className="font-bold text-text-main text-lg truncate">{item.name}</h3>
                       <p className="text-text-muted text-sm capitalize">{item.category}</p>
-                      <p className="text-primary font-black mt-1 text-lg">${item.price.toFixed(2)}</p>
+                      <p className="text-primary font-black mt-1 text-lg">₦{item.price.toFixed(2)}</p>
                     </div>
 
                     <div className="flex items-center gap-3 bg-bg-base p-1.5 rounded-2xl border border-gray-50">
-                      <button 
+                      <button
                         onClick={() => updateQuantity(item.id, item.quantity - 1)}
                         className="w-8 h-8 flex items-center justify-center rounded-xl bg-white text-text-main hover:text-primary transition-colors shadow-sm disabled:opacity-50"
                         disabled={item.quantity <= 1}
@@ -73,7 +73,7 @@ const CartPage = () => {
                         <FiMinus size={14} />
                       </button>
                       <span className="font-bold text-sm w-4 text-center">{item.quantity}</span>
-                      <button 
+                      <button
                         onClick={() => updateQuantity(item.id, item.quantity + 1)}
                         className="w-8 h-8 flex items-center justify-center rounded-xl bg-white text-text-main hover:text-primary transition-colors shadow-sm"
                       >
@@ -81,7 +81,7 @@ const CartPage = () => {
                       </button>
                     </div>
 
-                    <button 
+                    <button
                       onClick={() => removeFromCart(item.id)}
                       className="p-3 text-text-muted hover:text-red-500 hover:bg-red-50 rounded-2xl transition-all mr-2"
                     >
@@ -96,11 +96,11 @@ const CartPage = () => {
             <div className="lg:col-span-1">
               <div className="bg-white p-8 rounded-[2.5rem] shadow-xl shadow-gray-200/50 border border-gray-100 sticky top-24">
                 <h2 className="text-xl font-bold text-text-main mb-6">Order Summary</h2>
-                
+
                 <div className="space-y-4">
                   <div className="flex justify-between text-text-muted">
                     <span>Subtotal</span>
-                    <span className="font-bold text-text-main">${cartTotal.toFixed(2)}</span>
+                    <span className="font-bold text-text-main">₦{cartTotal.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-text-muted">
                     <span>Delivery Fee</span>
@@ -108,12 +108,12 @@ const CartPage = () => {
                   </div>
                   <div className="flex justify-between text-text-muted">
                     <span>Service Fee</span>
-                    <span className="font-bold text-text-main">${serviceFee.toFixed(2)}</span>
+                    <span className="font-bold text-text-main">₦{serviceFee.toFixed(2)}</span>
                   </div>
                   <div className="h-[1px] bg-gray-100 my-4" />
                   <div className="flex justify-between text-xl font-black">
                     <span className="text-text-main">Total</span>
-                    <span className="text-primary">${grandTotal.toFixed(2)}</span>
+                    <span className="text-primary">₦{grandTotal.toFixed(2)}</span>
                   </div>
                 </div>
 

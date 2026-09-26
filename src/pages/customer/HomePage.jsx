@@ -1,180 +1,180 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useMemo, useState } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
+import { FiArrowRight, FiSearch, FiX } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
-import { FiArrowRight } from 'react-icons/fi';
 import Navbar from '../../components/layout/Navbar';
 import FoodCard from '../../components/customer/FoodCard';
 import Button from '../../components/ui/Button';
 import { categories, foods } from '../../data/dummyData';
 import { useCart } from '../../context/CartContext';
 import Footer from '../../components/Footer';
-
 import PromoBanner from '../../components/customer/PromoBanner';
 import Testimonials from '../../components/customer/Testimonials';
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.3
-    }
-  }
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { 
-    opacity: 1, 
-    y: 0,
-    transition: { type: 'spring', stiffness: 100, damping: 20 }
-  }
-};
-
 const HomePage = () => {
   const [activeCategory, setActiveCategory] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
   const { cartCount } = useCart();
+  const reduceMotion = useReducedMotion();
 
-  const filteredFoods = activeCategory === 'All' 
-    ? foods 
-    : foods.filter(food => food.category === activeCategory);
+  const filteredFoods = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    return foods.filter((food) => {
+      const matchesCategory = activeCategory === 'All' || food.category === activeCategory;
+      const searchableText = `${food.name ?? ''} ${food.description ?? ''} ${food.category ?? ''}`.toLowerCase();
+      return matchesCategory && (!query || searchableText.includes(query));
+    });
+  }, [activeCategory, searchQuery]);
+
+  const sectionMotion = reduceMotion
+    ? {}
+    : { initial: { opacity: 0, y: 14 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true, margin: '-60px' }, transition: { duration: 0.35 } };
+
+  const heading = searchQuery.trim()
+    ? 'Search results'
+    : activeCategory === 'All'
+      ? 'Popular dishes'
+      : activeCategory;
 
   return (
-    <motion.div 
-      initial="hidden"
-      animate="visible"
-      className="min-h-screen bg-bg-base"
-    >
+    <div className="min-h-screen bg-bg-base">
       <Navbar cartCount={cartCount} />
-      
-      <main className="max-w-7xl mx-auto px-4 py-8">
-        {/* Hero Section */}
-        <motion.section 
-          variants={itemVariants}
-          className="relative rounded-[3rem] overflow-hidden mb-20 bg-primary group shadow-2xl shadow-primary/20"
-        >
-          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent z-10" />
-          <motion.img 
-            initial={{ scale: 1.2 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 1.5, ease: "easeOut" }}
-            src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1200&auto=format&fit=crop" 
-            alt="Delicious food"
-            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
-          />
-          <div className="relative z-20 p-8 md:p-20 flex flex-col items-start justify-center min-h-[500px]">
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.5, duration: 0.8 }}
-            >
-              <h1 className="text-5xl md:text-7xl font-black text-white leading-[1.1] tracking-tighter">
-                Savor the <br /> 
-                <span className="text-accent italic">QuickBite</span> Experience
-              </h1>
-              <p className="text-white/80 mt-8 max-w-lg text-xl font-medium leading-relaxed">
-                Premium food delivery from the finest kitchens in the city. Fast, fresh, and exceptionally flavorful.
-              </p>
-              <div className="mt-12 flex flex-wrap gap-6">
-                <Button variant="cta" size="lg" className="gap-3 py-5 px-10 text-xl shadow-2xl shadow-accent/40">
-                  Explore Menu <FiArrowRight />
-                </Button>
-                <div className="flex -space-x-4">
-                  {[1,2,3,4].map(i => (
-                    <img key={i} src={`https://i.pravatar.cc/100?u=${i}`} className="w-12 h-12 rounded-full border-4 border-primary shadow-lg" alt="User" />
-                  ))}
-                  <div className="w-12 h-12 rounded-full bg-accent border-4 border-primary flex items-center justify-center text-white text-xs font-black shadow-lg">
-                    12k+
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </motion.section>
-
-        {/* Categories Section */}
-        <motion.section 
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          className="mb-16"
-        >
-          <div className="flex items-center justify-between mb-8 px-2">
-            <h2 className="text-3xl font-black text-text-main tracking-tight">Browse <span className="text-primary italic">Categories</span></h2>
-          </div>
-          <div className="flex items-center gap-6 overflow-x-auto pb-6 no-scrollbar scroll-smooth">
-            {categories.map((cat) => (
-              <motion.button
-                variants={itemVariants}
-                key={cat.id}
-                onClick={() => setActiveCategory(cat.name)}
-                whileHover={{ y: -8, scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className={`
-                  flex flex-col items-center gap-3 px-8 py-6 rounded-[2.5rem] transition-all duration-500 min-w-[120px] border-2
-                  ${activeCategory === cat.name 
-                    ? 'bg-primary border-primary text-white shadow-2xl shadow-primary/30' 
-                    : 'bg-white border-transparent text-text-muted hover:border-primary/20 hover:text-primary shadow-sm hover:shadow-xl'
-                  }
-                `}
-              >
-                <span className="text-4xl filter drop-shadow-md">{cat.icon}</span>
-                <span className="text-xs font-black uppercase tracking-[0.2em]">{cat.name}</span>
-              </motion.button>
-            ))}
-          </div>
-        </motion.section>
-
-        {/* Food Grid Section */}
+      <main className="mx-auto w-full max-w-7xl px-4 py-5 sm:px-6 sm:py-8 lg:px-8">
         <motion.section
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
+          {...(reduceMotion ? {} : { initial: { opacity: 0, y: 12 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.45 } })}
+          aria-labelledby="home-hero-title"
+          className="group relative isolate mb-12 min-h-[360px] overflow-hidden rounded-2xl bg-gray-900 shadow-xl shadow-gray-900/10 sm:min-h-[420px] md:mb-16 md:rounded-[2rem] lg:min-h-[470px]"
         >
-          <div className="flex items-center justify-between mb-10 px-2">
-            <h2 className="text-3xl font-black text-text-main tracking-tight">
-              Best <span className="text-primary italic">Sellers</span>
-            </h2>
-            <div className="flex items-center gap-3">
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-text-muted bg-white px-4 py-2 rounded-full border border-gray-100 shadow-sm">
-                {filteredFoods.length} items available
-              </span>
+          <img
+            src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1600&auto=format&fit=crop"
+            alt=""
+            aria-hidden="true"
+            fetchPriority="high"
+            className="absolute inset-0 -z-20 h-full w-full object-cover transition-transform duration-700 motion-safe:group-hover:scale-[1.03]"
+          />
+          <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black/80 via-black/55 to-black/10" />
+          <div className="flex min-h-[360px] max-w-3xl flex-col items-start justify-center px-6 py-12 sm:min-h-[420px] sm:px-10 md:min-h-[470px] md:px-14 lg:px-16">
+            <span className="mb-4 inline-flex rounded-full border border-white/25 bg-white/10 px-3 py-1.5 text-xs font-semibold tracking-wide text-white backdrop-blur">
+              Fresh meals • Fast delivery
+            </span>
+            <h1 id="home-hero-title" className="max-w-2xl text-4xl font-black leading-[1.08] tracking-tight text-white sm:text-5xl md:text-6xl">
+              Good food, <span className="text-orange-300">good mood.</span>
+            </h1>
+            <p className="mt-5 max-w-xl text-base leading-relaxed text-white/85 sm:text-lg">
+              Discover satisfying meals from the QuickBite menu and order your next favorite.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Button
+                type="button"
+                variant="cta"
+                size="lg"
+                className="gap-2 rounded-xl px-6 py-3.5 text-base shadow-lg"
+                onClick={() => document.getElementById('menu')?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' })}
+              >
+                Explore menu <FiArrowRight aria-hidden="true" />
+              </Button>
+              <Link
+                to="/cart"
+                className="inline-flex min-h-12 items-center justify-center rounded-xl border border-white/40 bg-white/10 px-5 py-3 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
+              >
+                View cart ({cartCount})
+              </Link>
+            </div>
+          </div>
+        </motion.section>
+
+        <motion.section {...sectionMotion} aria-labelledby="categories-heading" className="mb-10 md:mb-12">
+          <div className="mb-4 flex items-end justify-between gap-4">
+            <div>
+              <p className="mb-1 text-xs font-bold uppercase tracking-[0.16em] text-primary">Find your craving</p>
+              <h2 id="categories-heading" className="text-2xl font-extrabold tracking-tight text-text-main sm:text-3xl">Browse categories</h2>
+            </div>
+          </div>
+          <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-3 sm:mx-0 sm:flex-wrap sm:px-0" role="group" aria-label="Filter food by category">
+            {categories.map((cat) => {
+              const selected = activeCategory === cat.name;
+              return (
+                <button
+                  key={cat.id}
+                  type="button"
+                  aria-pressed={selected}
+                  onClick={() => setActiveCategory(cat.name)}
+                  className={`inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
+                    selected
+                      ? 'border-primary bg-primary text-white shadow-sm'
+                      : 'border-gray-200 bg-white text-gray-700 hover:border-primary/40 hover:text-primary'
+                  }`}
+                >
+                  <span aria-hidden="true" className="text-lg">{cat.icon}</span>
+                  {cat.name}
+                </button>
+              );
+            })}
+          </div>
+        </motion.section>
+
+        <motion.section {...sectionMotion} id="menu" aria-labelledby="menu-heading" className="scroll-mt-28">
+          <div className="mb-5 flex flex-col gap-4 sm:mb-7 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="mb-1 text-xs font-bold uppercase tracking-[0.16em] text-primary">Made for your appetite</p>
+              <h2 id="menu-heading" className="text-2xl font-extrabold tracking-tight text-text-main sm:text-3xl">{heading}</h2>
+              <p className="mt-1 text-sm text-text-muted" aria-live="polite">
+                {filteredFoods.length} {filteredFoods.length === 1 ? 'item' : 'items'} found
+              </p>
+            </div>
+            <div className="relative w-full sm:max-w-sm">
+              <FiSearch aria-hidden="true" className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+              <input
+                type="search"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder="Search meals or ingredients"
+                aria-label="Search meals or ingredients"
+                className="min-h-12 w-full rounded-xl border border-gray-200 bg-white py-3 pl-11 pr-11 text-sm text-text-main shadow-sm outline-none transition placeholder:text-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/15"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  aria-label="Clear search"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg p-2 text-gray-500 hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                >
+                  <FiX aria-hidden="true" />
+                </button>
+              )}
             </div>
           </div>
 
-          <motion.div 
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
-          >
-            {filteredFoods.map((food) => (
-              <FoodCard key={food.id} food={food} />
-            ))}
-          </motion.div>
-
-          {filteredFoods.length === 0 && (
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="flex flex-col items-center justify-center py-32 bg-white rounded-[3rem] border-2 border-dashed border-gray-100"
-            >
-              <span className="text-7xl mb-6">🏜️</span>
-              <h3 className="text-2xl font-black text-text-main">Nothing on the menu today</h3>
-              <p className="text-text-muted font-medium mt-2">Try switching categories or come back later!</p>
-            </motion.div>
+          {filteredFoods.length > 0 ? (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
+              {filteredFoods.map((food) => <FoodCard key={food.id} food={food} />)}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-300 bg-white px-5 py-16 text-center sm:py-20">
+              <span aria-hidden="true" className="mb-4 text-5xl">🍽️</span>
+              <h3 className="text-xl font-bold text-text-main">No matching meals</h3>
+              <p className="mt-2 max-w-md text-sm text-text-muted">
+                {searchQuery ? 'Try another search term or clear your search to see all meals.' : 'There are no meals in this category right now. Try another category.'}
+              </p>
+              <div className="mt-5 flex flex-wrap justify-center gap-2">
+                {searchQuery && (
+                  <button type="button" onClick={() => setSearchQuery('')} className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-semibold hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+                    Clear search
+                  </button>
+                )}
+                <button type="button" onClick={() => { setActiveCategory('All'); setSearchQuery(''); }} className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
+                  Show all meals
+                </button>
+              </div>
+            </div>
           )}
         </motion.section>
 
-        {/* Promo Banner Section */}
-        <PromoBanner />
-
-        {/* Testimonials Section */}
-        <Testimonials />
+        <div className="mt-14 md:mt-20"><PromoBanner /></div>
+        <div className="mt-14 md:mt-20"><Testimonials /></div>
       </main>
-
       <Footer />
-    </motion.div>
+    </div>
   );
 };
 

@@ -1,11 +1,17 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { FiShoppingBag, FiArrowRight, FiActivity, FiUsers } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
 import StatCard from '../../components/admin/StatCard';
 import { orders, stats } from '../../data/dummyData';
 import Button from '../../components/ui/Button';
 
 const AdminDashboard = () => {
+  const navigate = useNavigate();
+
+  const orderList = orders || [];
+  const statList = stats || [];
+
   return (
     <div className="space-y-10">
       {/* Welcome Heading */}
@@ -16,8 +22,8 @@ const AdminDashboard = () => {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {stats.map((stat, index) => (
-          <StatCard key={stat.label} {...stat} index={index} />
+        {statList.map((stat, index) => (
+          <StatCard key={stat.label || index} {...stat} index={index} />
         ))}
       </div>
 
@@ -31,7 +37,11 @@ const AdminDashboard = () => {
               </div>
               <h2 className="text-xl font-bold text-text-main">Recent Orders</h2>
             </div>
-            <Button variant="ghost" className="gap-2">
+            <Button
+              variant="ghost"
+              className="gap-2"
+              onClick={() => navigate('/admin/orders')}
+            >
               View All <FiArrowRight />
             </Button>
           </div>
@@ -47,29 +57,35 @@ const AdminDashboard = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
-                {orders.map((order) => (
-                  <tr key={order.id} className="group hover:bg-bg-base/50 transition-colors">
-                    <td className="py-4 font-bold text-text-main">{order.id}</td>
-                    <td className="py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-[10px] font-bold">
-                          {order.user.charAt(0)}
+                {orderList.length > 0 ? (
+                  orderList.map((order) => (
+                    <tr key={order.id} className="group hover:bg-bg-base/50 transition-colors">
+                      <td className="py-4 font-bold text-text-main">{order.id}</td>
+                      <td className="py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-[10px] font-bold">
+                            {order?.user?.charAt(0) || 'U'}
+                          </div>
+                          <span className="text-sm font-medium">{order?.user || 'Guest User'}</span>
                         </div>
-                        <span className="text-sm font-medium">{order.user}</span>
-                      </div>
-                    </td>
-                    <td className="py-4 text-sm font-bold text-primary">${order.total.toFixed(2)}</td>
-                    <td className="py-4 text-right">
-                      <span className={`
-                        px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest
-                        ${order.status === 'Delivered' ? 'bg-green-100 text-green-700' : 
-                          order.status === 'Pending' ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700'}
-                      `}>
-                        {order.status}
-                      </span>
-                    </td>
+                      </td>
+                      <td className="py-4 text-sm font-bold text-primary">₦{order?.total?.toFixed(2) || '0.00'}</td>
+                      <td className="py-4 text-right">
+                        <span className={`
+                          px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest
+                          ${order.status === 'Delivered' ? 'bg-green-100 text-green-700' :
+                            order.status === 'Pending' ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700'}
+                        `}>
+                          {order.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="4" className="py-6 text-center text-text-muted text-sm">No orders found.</td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
@@ -83,7 +99,12 @@ const AdminDashboard = () => {
             <p className="text-white/80 text-sm leading-relaxed mb-6">
               You're currently in a peak hour window. Expect higher traffic for Pizza and Burgers categories.
             </p>
-            <Button variant="cta" size="md" className="w-full bg-white text-primary hover:bg-gray-100">
+            <Button
+              variant="cta"
+              size="md"
+              className="w-full bg-white text-primary hover:bg-gray-100"
+              onClick={() => navigate('/admin/analytics')}
+            >
               Go to Analytics
             </Button>
           </div>

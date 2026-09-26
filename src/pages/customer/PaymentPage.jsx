@@ -27,13 +27,13 @@ const PaymentPage = () => {
 
   const handlePaystackPayment = () => {
     setProcessing(true);
-    
+
     const paystack = new PaystackPop();
     paystack.newTransaction({
       key: 'pk_test_placeholder_key', // This would be the user's key
       email: user?.email || 'customer@example.com',
       amount: Math.round(grandTotal * 100), // Amount in kobo/cents
-      currency: 'USD', 
+      currency: 'USD',
       onSuccess: (transaction) => {
         toast.success('Payment successful! Your order is being prepared.');
         clearCart();
@@ -64,7 +64,7 @@ const PaymentPage = () => {
           {/* Order Summary */}
           <div className="space-y-8">
             <h1 className="text-3xl font-black text-text-main">Finalize <span className="text-primary italic">Payment</span></h1>
-            
+
             <div className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-gray-100">
               <h2 className="text-lg font-bold text-text-main mb-6">Order Summary</h2>
               <div className="space-y-4">
@@ -73,20 +73,20 @@ const PaymentPage = () => {
                     <span className="text-text-muted">
                       <span className="font-bold text-text-main">{item.quantity}x</span> {item.name}
                     </span>
-                    <span className="font-bold text-text-main">${(item.price * item.quantity).toFixed(2)}</span>
+                    <span className="font-bold text-text-main">₦{(item.price * item.quantity).toFixed(2)}</span>
                   </div>
                 ))}
-                
+
                 <div className="h-[1px] bg-gray-50 my-6" />
-                
+
                 <div className="space-y-3">
                   <div className="flex justify-between text-text-muted text-sm">
                     <span>Subtotal</span>
-                    <span className="font-bold text-text-main">${cartTotal.toFixed(2)}</span>
+                    <span className="font-bold text-text-main">₦{cartTotal.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-text-muted text-sm">
                     <span>Service Fee</span>
-                    <span className="font-bold text-text-main">${serviceFee.toFixed(2)}</span>
+                    <span className="font-bold text-text-main">₦{serviceFee.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-text-muted text-sm">
                     <span>Delivery</span>
@@ -96,7 +96,7 @@ const PaymentPage = () => {
 
                 <div className="pt-6 border-t border-gray-100 flex justify-between items-center">
                   <span className="text-xl font-bold text-text-main">Total to Pay</span>
-                  <span className="text-3xl font-black text-primary">${grandTotal.toFixed(2)}</span>
+                  <span className="text-3xl font-black text-primary">₦{grandTotal.toFixed(2)}</span>
                 </div>
               </div>
             </div>
@@ -134,17 +134,17 @@ const PaymentPage = () => {
                 Pay securely using your Debit/Credit card or Bank Transfer via Paystack.
               </p>
 
-              <Button 
-                variant="cta" 
-                size="lg" 
+              <Button
+                variant="cta"
+                size="lg"
                 className="w-full py-5 text-lg shadow-xl shadow-accent/20"
-                onClick={handlePaystackPayment}
+                // onClick={handlePaystackPayment}
                 disabled={processing}
               >
                 {processing ? (
                   <span className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
                 ) : (
-                  `Pay $${grandTotal.toFixed(2)} Now`
+                  `Pay ₦${grandTotal.toFixed(2)} Now`
                 )}
               </Button>
 

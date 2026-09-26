@@ -71,20 +71,20 @@ const Footer = () => {
                   <FiMapPin size={16} />
                 </div>
                 <p className="text-sm font-bold text-text-muted leading-relaxed">
-                  123 Culinary Ave, Foodie District,<br />Gastronomy City, 56789
+                  Fedral Low Cost,<br />Gombe State
                 </p>
               </div>
               <div className="flex items-center gap-4">
                 <div className="w-8 h-8 bg-primary/10 text-primary rounded-lg flex items-center justify-center shrink-0">
                   <FiPhone size={16} />
                 </div>
-                <p className="text-sm font-bold text-text-muted">+1 (234) 567-890</p>
+                <p className="text-sm font-bold text-text-muted">+234 9134585734</p>
               </div>
               <div className="flex items-center gap-4">
                 <div className="w-8 h-8 bg-primary/10 text-primary rounded-lg flex items-center justify-center shrink-0">
                   <FiMail size={16} />
                 </div>
-                <p className="text-sm font-bold text-text-muted">hello@quickbite.com</p>
+                <p className="text-sm font-bold text-text-muted">xozuzionoow67@gmail.com</p>
               </div>
             </div>
           </div>
@@ -93,7 +93,7 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-gray-50 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-[11px] text-text-muted font-bold uppercase tracking-[0.2em]">
-            © 2026 QuickBite Food Delivery. All rights reserved.
+            © 2011 - {new Date().getFullYear()} QuickBite Food Delivery. All rights reserved.
           </p>
           <div className="flex gap-8">
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/2560px-Visa_Inc._logo.svg.png" alt="Visa" className="h-3 opacity-30 grayscale" />

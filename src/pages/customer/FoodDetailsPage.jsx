@@ -39,8 +39,8 @@ const FoodDetailsPage = () => {
       <Navbar cartCount={cartCount} />
 
       <main className="max-w-6xl mx-auto px-4 py-8">
-        <Link 
-          to="/" 
+        <Link
+          to="/"
           className="inline-flex items-center gap-2 text-text-muted hover:text-primary transition-colors mb-8 group"
         >
           <div className="p-2 bg-white rounded-lg shadow-sm group-hover:bg-primary group-hover:text-white transition-all">
@@ -51,14 +51,14 @@ const FoodDetailsPage = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
           {/* Image Section */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             className="aspect-square rounded-[2.5rem] overflow-hidden shadow-2xl relative"
           >
-            <img 
-              src={food.image} 
-              alt={food.name} 
+            <img
+              src={food.image}
+              alt={food.name}
               className="w-full h-full object-cover"
             />
             <div className="absolute top-6 left-6 flex gap-2">
@@ -85,9 +85,9 @@ const FoodDetailsPage = () => {
             <h1 className="text-4xl md:text-5xl font-black text-text-main leading-tight">
               {food.name}
             </h1>
-            
+
             <div className="flex items-center gap-4 mt-6">
-              <span className="text-3xl font-black text-primary">${food.price.toFixed(2)}</span>
+              <span className="text-3xl font-black text-primary">₦{food.price.toFixed(2)}</span>
             </div>
 
             <p className="mt-8 text-text-muted text-lg leading-relaxed">
@@ -97,14 +97,14 @@ const FoodDetailsPage = () => {
             <div className="mt-10 border-y border-gray-100 py-8 flex flex-wrap items-center gap-8">
               {/* Quantity Selector */}
               <div className="flex items-center gap-4 bg-white p-2 rounded-2xl shadow-sm border border-gray-50">
-                <button 
+                <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-gray-100 transition-colors text-text-main"
                 >
                   <FiMinus />
                 </button>
                 <span className="text-xl font-bold w-8 text-center">{quantity}</span>
-                <button 
+                <button
                   onClick={() => setQuantity(quantity + 1)}
                   className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-gray-100 transition-colors text-text-main"
                 >
@@ -114,7 +114,7 @@ const FoodDetailsPage = () => {
 
               {/* Add to Cart Button */}
               <div className="flex-1">
-                <Button 
+                <Button
                   onClick={handleAddToCart}
                   variant={isAdded ? "primary" : "cta"}
                   size="lg"
@@ -139,7 +139,7 @@ const FoodDetailsPage = () => {
                         exit={{ y: -20, opacity: 0 }}
                         className="flex items-center gap-2"
                       >
-                        <FiShoppingCart /> Add to Cart — ${(food.price * quantity).toFixed(2)}
+                        <FiShoppingCart /> Add to Cart — ₦{(food.price * quantity).toFixed(2)}
                       </motion.span>
                     )}
                   </AnimatePresence>
